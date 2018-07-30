@@ -137,7 +137,7 @@ public class MailHandler {
                 "You are receiving this message because your subscription to the WhiteList process for " + project.getName() + " has been " + subscriber.getStatusName() + "." +
                 "<br>";
         if(subscriber.getStatus() == Subscriber.STATUS_ACCEPTED){
-            content = content + "Please click on the following link to purchase your TokenPCX." +
+            content = content + "Please click on the following link to purchase your Token PXCX." +
                     "<br><br>" +
                     button +
                     "<br><br>";
