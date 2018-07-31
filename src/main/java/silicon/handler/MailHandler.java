@@ -45,10 +45,8 @@ public class MailHandler {
         String email = subscriber.getEmail();
         Project project = subscriber.getProject();
         String apiToken = subscriber.getApiToken();
-        if(project.getAwsAccessKeyId() != null){
-            String url = S3.getPublicURL(project.getAwsAccessKeyId());
-            image = "<div style='width: 100%; background-color: white; padding: 30px;'><img src='"+ url +"' alt='company' width='200'><br></div><hr>";
-        }
+        String url = System.getenv("FRONT_URL") + "/assets/img/ns-logo.png";
+        image = "<div style='width: 100%; background-color: white; padding: 30px;'><img src='"+ url +"' alt='company' width='200'><br></div><hr>";
         String link = System.getenv("FRONT_URL") + "/confirm_subscribe/"+apiToken;
         String button = "<a href='"+ link +"' style='box-sizing:border-box;border-color:#348eda;font-weight:400;text-decoration:none;display:inline-block;margin:0;color:#ffffff;background-color:#348eda;border:solid 1px #348eda;border-radius:2px;font-size:14px;padding:12px 45px' target='_blank'>View my status</a>";
         String subject = "Welcome to " + project.getName();
@@ -71,10 +69,8 @@ public class MailHandler {
         String email = subscriber.getEmail();
         Project project = subscriber.getProject();
         String apiToken = subscriber.getApiToken();
-        if(project.getAwsAccessKeyId() != null){
-            String url = S3.getPublicURL(project.getAwsAccessKeyId());
-            image = "<div style='width: 100%; background-color: white; padding: 30px;'><img src='"+ url +"' alt='company' width='200'><br></div><hr>";
-        }
+        String url = System.getenv("FRONT_URL") + "/assets/img/ns-logo.png";
+        image = "<div style='width: 100%; background-color: white; padding: 30px;'><img src='"+ url +"' alt='company' width='200'><br></div><hr>";
         String link = System.getenv("FRONT_URL") + "/signin";
         String button = "<a href='"+ link +"' style='box-sizing:border-box;border-color:#348eda;font-weight:400;text-decoration:none;display:inline-block;margin:0;color:#ffffff;background-color:#348eda;border:solid 1px #348eda;border-radius:2px;font-size:14px;padding:12px 45px' target='_blank'>Login</a>";
         String subject = "Welcome to " + project.getName();
@@ -101,10 +97,8 @@ public class MailHandler {
             emails[i] = subscriber.getEmail();
             i++;
         }
-        if(project.getAwsAccessKeyId() != null){
-            String url = S3.getPublicURL(project.getAwsAccessKeyId());
-            image = "<div style='width: 100%; background-color: white; padding: 30px;'><img src='"+ url +"' alt='company' width='200'><br></div><hr>";
-        }
+        String url = System.getenv("FRONT_URL") + "/assets/img/ns-logo.png";
+        image = "<div style='width: 100%; background-color: white; padding: 30px;'><img src='"+ url +"' alt='company' width='200'><br></div><hr>";
         String link = System.getenv("FRONT_URL") + "/dashboard/subscriber_project/feed";
         String button = "<a href='"+ link +"' style='box-sizing:border-box;border-color:#348eda;font-weight:400;text-decoration:none;display:inline-block;margin:0;color:#ffffff;background-color:#348eda;border:solid 1px #348eda;border-radius:2px;font-size:14px;padding:12px 45px' target='_blank'>Go to Link</a>";
         String subject = "New Post in " + project.getName();
@@ -125,10 +119,8 @@ public class MailHandler {
     public static void sendStatusChange(Subscriber subscriber){
         String image = "";
         Project project = subscriber.getProject();
-        if(project.getAwsAccessKeyId() != null){
-            String url = S3.getPublicURL(project.getAwsAccessKeyId());
-            image = "<div style='width: 100%; background-color: white; padding: 30px;'><img src='"+ url +"' alt='company' width='200'><br></div><hr>";
-        }
+        String url = System.getenv("FRONT_URL") + "/assets/img/ns-logo.png";
+        image = "<div style='width: 100%; background-color: white; padding: 30px;'><img src='"+ url +"' alt='company' width='200'><br></div><hr>";
         String link = System.getenv("FRONT_URL") + "/confirm_subscribe/"+subscriber.getApiToken();
         String button = "<a href='"+ link +"' style='box-sizing:border-box;border-color:#348eda;font-weight:400;text-decoration:none;display:inline-block;margin:0;color:#ffffff;background-color:#348eda;border:solid 1px #348eda;border-radius:2px;font-size:14px;padding:12px 45px' target='_blank'>Purchase tokens</a>";
         String subject = project.getName() + " Whitelist - Your subscription has been " + subscriber.getStatusName();
@@ -210,15 +202,15 @@ public class MailHandler {
         sendMail(email,subject,content);
     }
 
-    public static void sendTransactionStatusResult(Order order){
+    public static void sendTransactionStatusResult(Order order) {
         String image = "";
         String email = order.getUser().getEmail();
         String transactionId = order.getTransactionId();
         String url = System.getenv("FRONT_URL") + "/assets/img/ns-logo.png";
-        image = "<div style='width: 100%; background-color: white; padding: 30px;'><img src='"+ url +"' alt='company' width='200'><br></div><hr>";
+        image = "<div style='width: 100%; background-color: white; padding: 30px;'><img src='" + url + "' alt='company' width='200'><br></div><hr>";
         String subject = "Status Transaction Changed";
         String content = image +
-                "Hello "+ order.getUser().getFirstName() + ",<br>" +
+                "Hello " + order.getUser().getFirstName() + ",<br>" +
                 "<br>" +
                 "The status for you order with TransactionId " + transactionId + " changed as below:" +
                 "<br><br>" +
@@ -226,8 +218,6 @@ public class MailHandler {
                 "<br><br>" +
                 "Thank you,<br>" +
                 "The Prestige Team";
-        sendMail(email,subject,content);
+        sendMail(email, subject, content);
     }
-
-
 }
