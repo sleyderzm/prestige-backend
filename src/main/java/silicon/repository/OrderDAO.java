@@ -15,4 +15,5 @@ public interface OrderDAO {
     Order findByTransactionIdAndPaymentMethod(String transactionId, String paymentMethod);
     List<Order> list(String status);
     List<Order> list();
+    Double balance(User user);
 }

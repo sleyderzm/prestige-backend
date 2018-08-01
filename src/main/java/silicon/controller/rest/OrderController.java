@@ -176,4 +176,23 @@ public class OrderController {
 
         return new ResponseEntity<Order>(order, HttpStatus.CREATED);
     }
+
+    @RequestMapping(value = "/balance", method = RequestMethod.POST)
+    public ResponseEntity<?> getBalance(
+    ) {
+        User currentUser = sessionService.getCurrentUser();
+
+        if(!currentUser.isSubscriberRole()){
+            ErrorResponse error = new ErrorResponse("You have not permission");
+            return new ResponseEntity<ErrorResponse>(error, HttpStatus.UNAUTHORIZED);
+        }
+
+        Double balance = orderService.balance(currentUser);
+
+        if(balance == null){
+            balance = 0.0;
+        }
+
+        return new ResponseEntity<Double>(balance, HttpStatus.OK);
+    }
 }

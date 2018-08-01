@@ -42,6 +42,13 @@ public class OrderDAOImp implements OrderDAO {
     }
 
     @Override
+    public Double balance(User user) {
+        return (Double)sessionFactory.getCurrentSession()
+                .createQuery("SELECT COALESCE(SUM(amountToken), 0) as balance FROM Order WHERE user_id = :userId AND status_code = :status")
+                .setParameter("userId", user.getId()).setParameter("status", Order.ACCEPTED).uniqueResult();
+    }
+
+    @Override
     public Pagination list(Pagination pagination, User user) {
         Query query;
         Integer count;
@@ -84,5 +91,4 @@ public class OrderDAOImp implements OrderDAO {
         return (Order)sessionFactory.getCurrentSession().createQuery("from Order WHERE transaction_id = :transactionId AND payment_method = :paymentMethod")
                 .setMaxResults(1).setParameter("transactionId", transactionId).setParameter("paymentMethod", paymentMethod).uniqueResult();
     }
-
 }
