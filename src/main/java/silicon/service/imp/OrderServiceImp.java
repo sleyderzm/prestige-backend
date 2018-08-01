@@ -45,6 +45,11 @@ public class OrderServiceImp implements OrderService {
     }
 
     @Override
+    public Double balance(User user) {
+        return orderDAO.balance(user);
+    }
+
+    @Override
     public Order findById(Long id) {
         if(id != null) return orderDAO.findById(id);
         return null;
