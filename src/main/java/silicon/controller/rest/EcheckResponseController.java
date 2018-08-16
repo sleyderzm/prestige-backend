@@ -113,24 +113,50 @@ public class EcheckResponseController {
         User user = echeckResponse.getSubscriber().getUser();
         MailHandler.sendCheckStatusResult(checkStatusResult, user);
 
-
+        Order order;
 
         if(checkStatusResult.getResult().equals("0") && checkStatusResult.getVerifyResult().equals("0")){
 
             Double amountSent = Double.parseDouble(checkProcessInfo.getCheckAmount());
-            Order order = new Order(Order.USD, amountSent, null, transactionId, user, Order.PENDING);
+            order = new Order(Order.USD, amountSent, null, transactionId, user, Order.ACCEPTED);
+            order.setStatusDescription(checkStatusResult.getVerifyResultDescription());
+        }else{
 
-            try{
-                orderService.save(order);
-            }catch (ConstraintViolationException ex){
-                return ConstraintViolationExceptionHandler.getResponse(ex);
-            }catch (Exception ex){
-                ErrorResponse error = new ErrorResponse("error when try to save order");
-                return new ResponseEntity<ErrorResponse>(error, HttpStatus.BAD_REQUEST);
+            Double amountSent = null;
+
+            if(checkProcessInfo.getCheckAmount() != null && !checkProcessInfo.getCheckAmount().equals("")){
+                amountSent = Double.parseDouble(checkProcessInfo.getCheckAmount());
             }
 
-            MailHandler.sendCreateOrder(order, user);
+            order = new Order(Order.USD, amountSent, null, transactionId, user, Order.REJECTED);
+
+            String statusDescription = null;
+
+            if(checkStatusResult.getVerifyResultDescription() != null && !checkStatusResult.getVerifyResultDescription().equals("")){
+                statusDescription = checkStatusResult.getVerifyResultDescription();
+            }
+
+            if(statusDescription == null){
+
+                if(checkStatusResult.getResultDescription() != null && !checkStatusResult.getResultDescription().equals("")){
+                    statusDescription = checkStatusResult.getResultDescription();
+                }
+
+            }
+
+            order.setStatusDescription(statusDescription);
         }
+
+        try{
+            orderService.save(order);
+        }catch (ConstraintViolationException ex){
+            return ConstraintViolationExceptionHandler.getResponse(ex);
+        }catch (Exception ex){
+            ErrorResponse error = new ErrorResponse("error when try to save order");
+            return new ResponseEntity<ErrorResponse>(error, HttpStatus.BAD_REQUEST);
+        }
+
+        MailHandler.sendCreateOrder(order, user);
 
         return new ResponseEntity<MessageResponse>(new MessageResponse("Done"), HttpStatus.OK);
     }

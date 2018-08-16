@@ -72,6 +72,13 @@ public class OrderDAOImp implements OrderDAO {
     }
 
     @Override
+    public Double balance(User user) {
+        return (Double)sessionFactory.getCurrentSession()
+                .createQuery("SELECT COALESCE(SUM(amountToken), 0) as balance FROM Order WHERE user_id = :userId AND status_code = :status")
+                .setParameter("userId", user.getId()).setParameter("status", Order.ACCEPTED).uniqueResult();
+    }
+
+    @Override
     public List<Order> list(String status) {
         Query query;
         query = sessionFactory.getCurrentSession().createQuery("FROM Order WHERE ( payment_method IN ('ETH', 'NEO', 'BTC') AND status_code IS NULL OR status_code = :status )").setParameter("status", status);

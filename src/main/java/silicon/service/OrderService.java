@@ -12,6 +12,7 @@ public interface OrderService {
     Pagination list(Pagination pagination);
     Pagination list(Pagination pagination, User user);
     List<Order> list();
+    Double balance(User user);
     List<Order> list(String status);
     Order findById(Long id);
     Order findByTransactionIdAndPaymentMethod(String transactionId, String paymentMethod);

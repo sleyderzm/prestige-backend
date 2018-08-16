@@ -32,7 +32,6 @@ public class Order implements Serializable{
     public static final String INVALID_TO_WALLET = "0006";
     public static final String INVALID_AMOUNT = "0007";
     public static final String INVALID_COIN = "0008";
-    public static final String INTERNAL_ERROR = "0009";
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
