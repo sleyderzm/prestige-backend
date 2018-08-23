@@ -65,7 +65,7 @@ public class Order implements Serializable{
     @NotNull
     private User user;
 
-    public static final Double TOKEN_PRICE = 0.10;
+    public static final Double TOKEN_PRICE = 0.05;
 
     public Order() {
         this.createdAt = new Date();
