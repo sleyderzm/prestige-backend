@@ -143,8 +143,38 @@ public class ApplicationController {
             return new ResponseEntity<ErrorResponse>(error, HttpStatus.BAD_REQUEST);
         }
 
-        if(( publicAddress == null || publicAddress.isEmpty())) {
+        if(
+            typeAddress == null ||
+            typeAddress.isEmpty() ||
+            (!typeAddress.equals("etherum_address") && !typeAddress.equals("neo_address") && !typeAddress.equals("bitcoin_address"))
+        ) {
             ErrorResponse error = new ErrorResponse("Invalid Address (you need at least one address) ");
+            return new ResponseEntity<ErrorResponse>(error, HttpStatus.BAD_REQUEST);
+        }
+
+        if(!publicAddress.matches("[a-zA-Z0-9]*")){
+            ErrorResponse error = new ErrorResponse("Invalid Public Addres");
+            return new ResponseEntity<ErrorResponse>(error, HttpStatus.BAD_REQUEST);
+        }
+
+        if(typeAddress.equals("etherum_address")){
+            if(publicAddress.length() == 40){
+                publicAddress = "0x" + publicAddress;
+            }
+
+            if(publicAddress.length() != 42){
+                ErrorResponse error = new ErrorResponse("The public address isn't valid for ETH");
+                return new ResponseEntity<ErrorResponse>(error, HttpStatus.BAD_REQUEST);
+            }
+        }
+
+        if(typeAddress.equals("bitcoin_address") && publicAddress.length() != 34){
+            ErrorResponse error = new ErrorResponse("The public address isn't valid for BTC");
+            return new ResponseEntity<ErrorResponse>(error, HttpStatus.BAD_REQUEST);
+        }
+
+        if(typeAddress.equals("neo_address") && publicAddress.length() != 34){
+            ErrorResponse error = new ErrorResponse("The public address isn't valid for NEO");
             return new ResponseEntity<ErrorResponse>(error, HttpStatus.BAD_REQUEST);
         }
 

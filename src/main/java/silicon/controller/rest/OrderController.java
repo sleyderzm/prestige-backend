@@ -8,9 +8,7 @@ import org.supercsv.io.ICsvBeanWriter;
 import org.supercsv.prefs.CsvPreference;
 import silicon.handler.*;
 import silicon.model.*;
-import silicon.service.OrderService;
-import silicon.service.ProjectService;
-import silicon.service.SessionService;
+import silicon.service.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
@@ -28,7 +26,13 @@ public class OrderController {
     OrderService orderService;
 
     @Autowired
+    CoinService coinService;
+
+    @Autowired
     ProjectService projectService;
+
+    @Autowired
+    SubscriberService subscriberService;
 
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<?> listOrders(
@@ -125,20 +129,27 @@ public class OrderController {
             @RequestParam String paymentMethod,
             @RequestParam Double amountSent,
             @RequestParam String walletAddress,
-            @RequestParam String transactionId
+            @RequestParam String transactionId,
+            @RequestParam String apiToken
     ) {
 
         paymentMethod = Utils.validSringParam(paymentMethod);
         walletAddress = Utils.validSringParam(walletAddress);
         transactionId = Utils.validSringParam(transactionId);
+        apiToken = Utils.validSringParam(apiToken);
 
         List<String> invalidParams = Utils.validateRequiredParams(
-                new String[]{"Payment Method", "Amount Sent", "Wallet Address", "Transaction Id"},
-                new Object[]{paymentMethod, amountSent, walletAddress, transactionId}
+                new String[]{"Payment Method", "Amount Sent", "Wallet Address", "Transaction Id", "Project Token"},
+                new Object[]{paymentMethod, amountSent, walletAddress, transactionId, apiToken}
         );
 
         if(invalidParams != null){
             ErrorResponse error = new ErrorResponse("Invalid params " + invalidParams.toString());
+            return new ResponseEntity<ErrorResponse>(error, HttpStatus.BAD_REQUEST);
+        }
+
+        if(!paymentMethod.equals("USD") && !paymentMethod.equals("NEO") && !paymentMethod.equals("ETH") && !paymentMethod.equals("BTC")){
+            ErrorResponse error = new ErrorResponse("Invalid Payment Method");
             return new ResponseEntity<ErrorResponse>(error, HttpStatus.BAD_REQUEST);
         }
 
@@ -161,7 +172,34 @@ public class OrderController {
             return new ResponseEntity<ErrorResponse>(error, HttpStatus.BAD_REQUEST);
         }
 
-        Order order = new Order(paymentMethod, amountSent, walletAddress, transactionId, currentUser, Order.PENDING);
+        Project project = this.projectService.findByApiToken(apiToken);
+        if(project == null){
+            ErrorResponse errorResponse = new ErrorResponse("invalid apiToken");
+            return new ResponseEntity<ErrorResponse>(errorResponse, HttpStatus.BAD_REQUEST);
+        }
+
+        Subscriber subscriber = subscriberService.findByProjectAndUser(project, currentUser);
+
+        if(!paymentMethod.equals("USD")){
+
+            if(
+               (subscriber.getTypeAddress().equals("etherum_address") && !paymentMethod.equals("ETH")) ||
+               (subscriber.getTypeAddress().equals("neo_address") && !paymentMethod.equals("NEO")) ||
+               (subscriber.getTypeAddress().equals("bitcoin_address") && !paymentMethod.equals("BTC"))
+            ){
+                ErrorResponse error = new ErrorResponse("Invalid Payment Method");
+                return new ResponseEntity<ErrorResponse>(error, HttpStatus.BAD_REQUEST);
+            }
+
+            if(!subscriber.getPublicAddress().toUpperCase().equals(walletAddress.toUpperCase())){
+                ErrorResponse error = new ErrorResponse("the wallet doesn't registered");
+                return new ResponseEntity<ErrorResponse>(error, HttpStatus.BAD_REQUEST);
+            }
+
+        }
+
+        Coin coin = coinService.findBySymbol(paymentMethod);
+        Order order = new Order(coin, amountSent, walletAddress, transactionId, currentUser, Order.PENDING);
 
         try{
             orderService.save(order);

@@ -37,6 +37,9 @@ public class EcheckResponseController {
     @Autowired
     OrderService orderService;
 
+    @Autowired
+    CoinService coinService;
+
 
     @RequestMapping(value="/update_transaction" ,method = RequestMethod.GET)
     public ResponseEntity<?> updateTransactionGet(
@@ -115,10 +118,11 @@ public class EcheckResponseController {
 
         Order order;
 
+        Coin coin = coinService.findBySymbol(Order.USD);
         if(checkStatusResult.getResult().equals("0") && checkStatusResult.getVerifyResult().equals("0")){
 
             Double amountSent = Double.parseDouble(checkProcessInfo.getCheckAmount());
-            order = new Order(Order.USD, amountSent, null, transactionId, user, Order.ACCEPTED);
+            order = new Order(coin, amountSent, null, transactionId, user, Order.ACCEPTED);
             order.setStatusDescription(checkStatusResult.getVerifyResultDescription());
         }else{
 
@@ -128,7 +132,7 @@ public class EcheckResponseController {
                 amountSent = Double.parseDouble(checkProcessInfo.getCheckAmount());
             }
 
-            order = new Order(Order.USD, amountSent, null, transactionId, user, Order.REJECTED);
+            order = new Order(coin, amountSent, null, transactionId, user, Order.REJECTED);
 
             String statusDescription = null;
 
