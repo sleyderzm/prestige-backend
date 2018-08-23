@@ -2,15 +2,11 @@ package silicon.model;
 
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import silicon.handler.Coin;
 import silicon.handler.Utils;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.Date;
 
 @Entity
@@ -75,14 +71,14 @@ public class Order implements Serializable{
         this.createdAt = new Date();
     }
 
-    public Order(String paymentMethod, Double amountSent, String walletAddress, String transactionId, User user, String statusCode) {
-        this.paymentMethod = paymentMethod;
+    public Order(Coin coin, Double amountSent, String walletAddress, String transactionId, User user, String statusCode) {
+        this.paymentMethod = coin.getSymbol();
         this.amountSent = amountSent;
         this.walletAddress = walletAddress;
         this.transactionId = transactionId;
         this.user = user;
         this.statusCode = statusCode;
-        calculateAmountToken();
+        calculateAmountToken(coin);
         this.createdAt = new Date();
     }
 
@@ -102,20 +98,9 @@ public class Order implements Serializable{
         this.statusCode = statusCode;
     }
 
-    public Double calculateAmountToken(){
-        Double DollarValue;
-        if(this.getPaymentMethod().equals(Order.USD)){
-            DollarValue = 1.0;
-        }else{
-            DollarValue = Coin.getUSDValue(this.getPaymentMethod());
-        }
-        if( DollarValue == null){
-            this.amountToken = null;
-            return null;
-        }
-        this.amountToken = (this.amountSent * DollarValue) / Order.TOKEN_PRICE;
+    private void calculateAmountToken(Coin coin){
+        this.amountToken = (this.amountSent * coin.getValue()) / Order.TOKEN_PRICE;
         this.amountToken = Utils.round8Decimals(this.amountToken);
-        return this.amountToken;
     }
 
     public Date getCreatedAt() {

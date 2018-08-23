@@ -43,3 +43,35 @@ INSERT INTO projects (id, api_token, name, description, client_id)
         SELECT id FROM projects WHERE id = 1
     );
 ;
+
+INSERT INTO coins (id, api_id, name, symbol, value, updated_at)
+  SELECT 1, '1027', 'Ethereum', 'ETH', 273.251529973, now()
+  WHERE
+    NOT EXISTS (
+        SELECT id FROM coins WHERE id = 1
+    );
+;
+
+INSERT INTO coins (id, api_id, name, symbol, value, updated_at)
+  SELECT 2, '1', 'Bitcoin', 'BTC', 6403.96046684, now()
+  WHERE
+    NOT EXISTS (
+        SELECT id FROM coins WHERE id = 2
+    );
+;
+
+INSERT INTO coins (id, api_id, name, symbol, value, updated_at)
+  SELECT 3, '1376', 'NEO', 'NEO', 17.1863530654, now()
+  WHERE
+    NOT EXISTS (
+        SELECT id FROM coins WHERE id = 3
+    );
+;
+
+INSERT INTO coins (id, api_id, name, symbol, value, updated_at)
+  SELECT 4, null, 'Dollar', 'USD', 1, now()
+  WHERE
+    NOT EXISTS (
+        SELECT id FROM coins WHERE id = 4
+    );
+;
