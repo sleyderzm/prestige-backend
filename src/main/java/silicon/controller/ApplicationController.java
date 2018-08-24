@@ -567,7 +567,7 @@ public class ApplicationController {
         return new ResponseEntity<MessageResponse>(message,HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/redirect_dashboard_subscriber", method = RequestMethod.POST)
+    @RequestMapping(value = "/redirect_dashboard_subscriber", method = RequestMethod.GET)
     @CrossOrigin(origins = "*")
     public ModelAndView method() {
         String url = System.getenv("FRONT_URL") + "/dashboard/subscriber_project/general?greenPayment=success";

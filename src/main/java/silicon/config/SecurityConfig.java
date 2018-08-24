@@ -40,7 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 registry.addMapping("/redirect_dashboard_subscriber").allowedOrigins(
                         "*"
                 ).allowedMethods(
-                        "POST"
+                        "GET"
                 );
                 registry.addMapping("/**").allowedOrigins(
                         System.getenv("FRONT_URL")
