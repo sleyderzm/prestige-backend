@@ -39,10 +39,10 @@ public class IdentityMindThread extends Thread {
             String statusIM = resposeIM.get("state").asText();
             subscriber.setTransactionId(transactionId);
             subscriber.setStatusIM(statusIM);
-            if(subscriber.getStatusIM().equals(subscriber.STATUS_ACCEPTED)){
+            /*if(subscriber.getStatusIM().equals(subscriber.STATUS_ACCEPTED)){
                 subscriber.setStatus(subscriber.getStatusIM());
                 MailHandler.sendStatusChange(subscriber);
-            }
+            }*/
             subscriberService.save(subscriber);
 
             //save IMresponse

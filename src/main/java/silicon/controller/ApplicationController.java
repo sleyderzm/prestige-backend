@@ -492,9 +492,9 @@ public class ApplicationController {
 
         subscriber.setStatusIM(body.get("state").asText());
 
-        if(subscriber.getStatusIM().equals(Subscriber.STATUS_ACCEPTED)){
+        /*if(subscriber.getStatusIM().equals(Subscriber.STATUS_ACCEPTED)){
             subscriber.setStatus(subscriber.getStatusIM());
-        }
+        }*/
 
         try{
             subscriberService.save(subscriber);
@@ -505,9 +505,9 @@ public class ApplicationController {
             return new ResponseEntity<ErrorResponse>(error, HttpStatus.BAD_REQUEST);
         }
 
-        if(subscriber.getStatusIM().equals(Subscriber.STATUS_ACCEPTED)){
+        /*if(subscriber.getStatusIM().equals(Subscriber.STATUS_ACCEPTED)){
             MailHandler.sendStatusChange(subscriber);
-        }
+        }*/
 
         //save IMresponse
         IMResponse imResponse = new IMResponse(body.toString(), subscriber);
@@ -542,9 +542,9 @@ public class ApplicationController {
 
         subscriber.setStatusIM(body.get("decision").asText());
 
-        if(subscriber.getStatusIM().equals(Subscriber.STATUS_ACCEPTED)){
+        /*if(subscriber.getStatusIM().equals(Subscriber.STATUS_ACCEPTED)){
             subscriber.setStatus(subscriber.getStatusIM());
-        }
+        }*/
 
         try{
             subscriberService.save(subscriber);
@@ -555,9 +555,9 @@ public class ApplicationController {
             return new ResponseEntity<ErrorResponse>(error, HttpStatus.BAD_REQUEST);
         }
 
-        if(subscriber.getStatusIM().equals(Subscriber.STATUS_ACCEPTED)){
+        /*if(subscriber.getStatusIM().equals(Subscriber.STATUS_ACCEPTED)){
             MailHandler.sendStatusChange(subscriber);
-        }
+        }*/
 
         //save IMresponse
         IMResponse imResponse = new IMResponse(body.toString(), subscriber);
